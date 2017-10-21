@@ -1,0 +1,121 @@
+swagger: '2.0'
+info:
+    title: Ladder Tournament AUTH API
+    version: '1.0.0'
+schemes:
+    - http
+basePath:
+    /auth
+consumes:
+    - application/json
+produces:
+    - application/json
+definitions:
+    id:
+        type: integer
+        format: int32
+    account_id:
+        type: integer
+        format: int32
+    datetime:
+        type: string
+        format: datetime
+    Account:
+        description: 返回的用户信息
+        required:
+            - account_id
+        properties:
+            account_id:
+                type: integer
+                format: int32
+    TokenDetail:
+        properties:
+            account_id:
+                type: integer
+                format: int32
+            access_token:
+                type: string
+            refresh_token:
+                type: string
+            token_type:
+                type: string
+                default: Bearer
+            expires_in:
+                type: integer
+                format: int32
+            scopes:
+                type: array
+                items:
+                  type: string
+                  description: token 类型
+            is_new_weixin_app:
+                type: boolean
+    WxUserInfoWithCode:
+        properties:
+            code:
+                type: string
+            iv:
+                type: string
+            raw_data:
+                type: string
+            signature:
+                type: string
+            encrypted_data:
+                type: string
+    None:
+        type: object
+    Error:
+        properties:
+            error_code:
+                type: string
+            message:
+                type: string
+            text:
+                type: string
+    Success:
+        properties:
+            ok:
+                type: boolean
+parameters:
+    AccessToken:
+        name: Authorization
+        in: header
+        required: true
+        type: string
+
+securityDefinitions:
+    OAuth2:
+        type: oauth2
+        flow: implicit
+        tokenUrl: https://example.com/auth/oauth/token
+        authorizationUrl: http://swagger.io/api/oauth/dialog
+        scopes:
+            login: 客户端登陆
+            panel: 后台登录
+paths:
+    /code/token:
+        post:
+            summary: token
+            description: 通过小程序获取的登录凭证code，换取微信session key和open id，并生成和返回本地token
+            tags: [OAUTH]
+            operationId: code_token
+            parameters:
+                - $ref: '#/parameters/AccessToken'
+                - name: wx_user_info
+                  in: body
+                  required: true
+                  schema:
+                      $ref: '#/definitions/WxUserInfoWithCode'
+            responses:
+                200:
+                    description: 用户信息
+                    schema:
+                        $ref: '#/definitions/TokenDetail'
+                default:
+                    description: Unexpected Error
+                    schema:
+                        $ref: '#/definitions/Error'
+            security:
+                - OAuth2: [register]
+tags:
+    - {description: "授权接口", name: OAUTH}
