@@ -5,7 +5,7 @@ info:
 schemes:
     - http
 basePath:
-    /auth
+    /v1
 consumes:
     - application/json
 produces:
@@ -28,6 +28,8 @@ definitions:
             account_id:
                 type: integer
                 format: int32
+    hello:
+        type: string
     TokenDetail:
         properties:
             account_id:
@@ -90,14 +92,31 @@ securityDefinitions:
         tokenUrl: https://example.com/auth/oauth/token
         authorizationUrl: http://swagger.io/api/oauth/dialog
         scopes:
-            login: 客户端登陆
+            open: 客户端登陆
             panel: 后台登录
 paths:
+    /hello:
+        get:
+            summary: hello
+            description: hello
+            tags: [LOGIN]
+            operationId: hello
+            responses:
+                200:
+                    description: 测试接口
+                    schema:
+                        $ref: '#/definitions/hello'
+                default:
+                    description: Unexpected Error
+                    schema:
+                        $ref: '#/definitions/Error'
+            security:
+                - OAuth2: [open]
     /code/token:
         post:
             summary: token
             description: 通过小程序获取的登录凭证code，换取微信session key和open id，并生成和返回本地token
-            tags: [OAUTH]
+            tags: [LOGIN]
             operationId: code_token
             parameters:
                 - $ref: '#/parameters/AccessToken'
@@ -116,6 +135,6 @@ paths:
                     schema:
                         $ref: '#/definitions/Error'
             security:
-                - OAuth2: [register]
+                - OAuth2: [open]
 tags:
-    - {description: "授权接口", name: OAUTH}
+    - {description: "授权接口", name: LOGIN}

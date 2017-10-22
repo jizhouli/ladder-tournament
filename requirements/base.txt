@@ -1,0 +1,20 @@
+# base
+gunicorn==18.0.0
+supervisor==3.1.3
+simplejson==3.8.1
+pyyaml==3.11
+Flask==0.10.1
+Flask-Script==2.0.5
+flask-restful==0.3.4
+ipython==2.4.0
+gevent==1.0.2
+newrelic==2.60.0.46
+anyjson==0.3.3
+iptools==0.6.1
+IPy==0.83
+jsonschema
+mockredispy==2.9.0.11
+# 这个版本 requests https 正常
+requests==2.9.1
+certifi==2015.04.28
+pyopenssl==0.15.1
